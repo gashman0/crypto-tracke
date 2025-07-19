@@ -1,73 +1,36 @@
-import React, { useEffect, useRef, memo } from 'react';
+import React, { useEffect, useRef } from 'react';
 
+const TradingViewWidget = () => {
+  const containerRef = useRef();
 
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js';
+    script.async = true;
+    script.type = 'text/javascript';
+    script.innerHTML = JSON.stringify({
+      symbols: [
+        { proName: "FOREXCOM:SPXUSD", title: "S&P 500" },
+        { proName: "FOREXCOM:NSXUSD", title: "Nasdaq 100" },
+        { proName: "FX_IDC:EURUSD", title: "EUR/USD" },
+        { proName: "BITSTAMP:BTCUSD", title: "Bitcoin" },
+        { proName: "BITSTAMP:ETHUSD", title: "Ethereum" }
+      ],
+      colorTheme: "light",
+      isTransparent: false,
+      displayMode: "adaptive",
+      locale: "en"
+    });
 
-
-
-
-
-function TradingViewWidget() {
-  const container = useRef();
-  useEffect(
-    () => {
-      const script = document.createElement("script");
-      script.src = "https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js";
-      script.type = "text/javascript";
-      script.async = true;
-      script.innerHTML = `
-        {
-          "symbols": [
-            {
-              "proName": "FOREXCOM:SPXUSD",
-              "title": "S&P 500 Index"
-            },
-            {
-              "proName": "FOREXCOM:NSXUSD",
-              "title": "US 100 Cash CFD"
-            },
-            {
-              "proName": "FX_IDC:EURUSD",
-              "title": "EUR to USD"
-            },
-            {
-              "proName": "BITSTAMP:BTCUSD",
-              "title": "Bitcoin"
-            },
-            {
-              "proName": "BITSTAMP:ETHUSD",
-              "title": "Ethereum"
-            },
-            {
-              "proName": "BINANCE:XRPUSDT",
-              "title": "Ripple"
-            },
-            {
-              "proName": "BINANCE:SOLUSDT",
-              "title": "Solana"
-            }
-          ],
-          "colorTheme": "light",
-          "locale": "en",
-          "largeChartUrl": "",
-          "isTransparent": false,
-          "showSymbolLogo": true,
-          "displayMode": "adaptive"
-        }`;
-        const currentContainer = container.current;
-        container.current.appendChild(script);
-        return () => {
-            // Cleanup: Remove the script on unmount
-            currentContainer.innerHTML = '';
-        };
-    },
-    []
-  );
+    if (containerRef.current) {
+      containerRef.current.innerHTML = ''; // Clear old content
+      containerRef.current.appendChild(script);
+    }
+  }, []);
 
   return (
-    <div className="tradingview-widget-container" ref={container}>
-      <div className="tradingview-widget-container__widget"></div>
-    </div>
+    <div className="tradingview-widget-container" ref={containerRef} />
   );
-}
+};
 
-export default memo(TradingViewWidget);
+export default TradingViewWidget;

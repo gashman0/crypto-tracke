@@ -3,14 +3,14 @@ import React from 'react'
 const Footer = () => {
   return (
     <>
-        <footer class="big-footer">
-            <div class="container footer-grid">
-                <div class="footer-brand">
+        <footer className="big-footer">
+            <div className="container footer-grid">
+                <div className="footer-brand">
                 <h2>🪙 CryptoTracker</h2>
                 <p>Track real-time prices, trends, and market caps of top cryptocurrencies with ease.</p>
                 </div>
 
-                <div class="footer-section">
+                <div className="footer-section">
                 <h3>About</h3>
                 <ul>
                     <li><a href="#">Company</a></li>
@@ -19,7 +19,7 @@ const Footer = () => {
                 </ul>
                 </div>
 
-                <div class="footer-section">
+                <div className="footer-section">
                 <h3>Resources</h3>
                 <ul>
                     <li><a href="#">Market Overview</a></li>
@@ -28,7 +28,7 @@ const Footer = () => {
                 </ul>
                 </div>
 
-                <div class="footer-section">
+                <div className="footer-section">
                 <h3>Support</h3>
                 <ul>
                     <li><a href="#">Help Center</a></li>
@@ -38,8 +38,8 @@ const Footer = () => {
                 </div>
             </div>
 
-            <div class="footer-bottom">
-                <div class="container">
+            <div className="footer-bottom">
+                <div className="container">
                 <p>© 2025 CryptoTracker. All rights reserved.</p>
                 </div>
             </div>

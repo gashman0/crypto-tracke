@@ -5,8 +5,8 @@ const NavBar = () => {
   return (
     <>
       <header>
-        <div class="container">
-          <h1 class="logo">🪙 CryptoTracker</h1>
+        <div className="container">
+          <h1 className="logo">🪙 CryptoTracker</h1>
           <nav>
             <ul>
               <li><a href="#">Home</a></li>

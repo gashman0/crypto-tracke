@@ -84,6 +84,25 @@ header .container {
 .negative {
   color: #ea3943;
 }
+.nav-button {
+  padding: 8px 16px;
+  margin-right: 10px;
+  background-color: #333;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+.nav-button:hover:not(:disabled) {
+  background-color: #555;
+}
+.nav-button:disabled,
+.nav-button.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   nav ul {

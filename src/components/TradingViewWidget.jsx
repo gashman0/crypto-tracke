@@ -1,10 +1,15 @@
 import React, { useEffect, useRef } from 'react';
 
 const TradingViewWidget = () => {
-  const containerRef = useRef();
+  const containerRef = useRef(null);
 
   useEffect(() => {
+    // Check if we're on the client side and container exists
+    if (typeof window === 'undefined' || !containerRef.current) return;
+
+    const container = containerRef.current;
     const script = document.createElement('script');
+
     script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js';
     script.async = true;
     script.type = 'text/javascript';
@@ -22,14 +27,25 @@ const TradingViewWidget = () => {
       locale: "en"
     });
 
-    if (containerRef.current) {
-      containerRef.current.innerHTML = ''; // Clear old content
-      containerRef.current.appendChild(script);
+    // Clear previous content safely
+    while (container.firstChild) {
+      container.removeChild(container.firstChild);
     }
+
+    container.appendChild(script);
+
+    return () => {
+      // Cleanup on unmount
+      if (container.firstChild) {
+        container.innerHTML = '';
+      }
+    };
   }, []);
 
   return (
-    <div className="tradingview-widget-container" ref={containerRef} />
+    <div className="tradingview-widget-container" ref={containerRef}>
+      <div className="tradingview-widget-container__widget"></div>
+    </div>
   );
 };
 

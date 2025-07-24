@@ -35,7 +35,7 @@ const CryptoList = () => {
                             <tr>
                                 <th>#</th>
                                 <th>Coin</th>
-                                <th>Symbol</th>
+                                <th className="symbol-col">Symbol</th>
                                 <th>Price</th>
                                 <th>24h Change</th>
                                 <th>Market Cap</th>
@@ -53,7 +53,7 @@ const CryptoList = () => {
                                 <tr key={coin.id}>
                                     <td>{coin.market_cap_rank}</td>
                                     <td><img src={coin.image} alt={coin.name} width="24" /> {coin.name}</td>
-                                    <td>{coin.symbol.toUpperCase()}</td>
+                                    <td className="symbol-col">{coin.symbol.toUpperCase()}</td>
                                     <td>${coin.current_price.toLocaleString()}</td>
                                     <td style={{ color: coin.price_change_percentage_24h >= 0 ? 'green' : 'red' }}>
                                     {coin.price_change_percentage_24h.toFixed(2)}%

@@ -102,57 +102,6 @@ header .container {
   opacity: 0.6;
   cursor: not-allowed;
 }
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  nav ul {
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 10px;
-  }
-
-  header .container {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .crypto-table table,
-  .crypto-table thead,
-  .crypto-table tbody,
-  .crypto-table th,
-  .crypto-table td,
-  .crypto-table tr {
-    display: block;
-  }
-
-  .crypto-table tr {
-    margin-bottom: 15px;
-  }
-
-  .crypto-table td {
-    padding: 10px;
-    border: none;
-    border-bottom: 1px solid #30363d;
-    position: relative;
-    padding-left: 50%;
-  }
-
-  .crypto-table td::before {
-    position: absolute;
-    top: 10px;
-    left: 15px;
-    width: 45%;
-    white-space: nowrap;
-    font-weight: bold;
-    color: #8b949e;
-  }
-
-  .crypto-table td:nth-of-type(1)::before { content: "#"; }
-  .crypto-table td:nth-of-type(2)::before { content: "Coin"; }
-  .crypto-table td:nth-of-type(3)::before { content: "Price"; }
-  .crypto-table td:nth-of-type(4)::before { content: "24h Change"; }
-  .crypto-table td:nth-of-type(5)::before { content: "Market Cap"; }
-}
 .big-footer {
   background-color: #161b22;
   padding: 40px 0 20px;
@@ -212,26 +161,58 @@ header .container {
   color: #6e7681;
 }
 
-/* Light mode overrides */
-body.light-mode .big-footer {
-  background-color: #f2f2f2;
-  color: #111;
+
+/* Responsive Design */
+@media (max-width: 768px) {
+ @media (max-width: 768px) {
+  nav ul {
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  header .container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .search-bar input {
+    width: 100%;
+    font-size: 15px;
+    padding: 8px 12px;
+  }
+
+  .crypto-table table {
+    font-size: 14px;
+  }
+
+  .crypto-table th,
+  .crypto-table td {
+    padding: 10px;
+  }
+
+  .crypto-table td img {
+    width: 16px;
+  }
+
+  .crypto-table td img {
+    display: none;
+  }
+  
+  .crypto-table .symbol-col {
+    display: none;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    text-align: left;
+  }
+
+  .footer-bottom {
+    text-align: left;
+    font-size: 12px;
+  }
 }
 
-body.light-mode .footer-brand h2 {
-  color: #111;
-}
-
-body.light-mode .footer-brand p,
-body.light-mode .footer-section ul li a,
-body.light-mode .footer-bottom {
-  color: #444;
-}
-
-body.light-mode .footer-section ul li a:hover {
-  color: #0077cc;
-}
-
-body.light-mode .footer-bottom {
-  border-color: #ccc;
 }

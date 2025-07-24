@@ -164,7 +164,6 @@ header .container {
 
 /* Responsive Design */
 @media (max-width: 768px) {
- @media (max-width: 768px) {
   nav ul {
     flex-direction: column;
     gap: 10px;
@@ -176,14 +175,26 @@ header .container {
     align-items: flex-start;
   }
 
+  .search-bar {
+    padding: 0 15px;
+  }
+
   .search-bar input {
     width: 100%;
     font-size: 15px;
     padding: 8px 12px;
+    border-radius: 5px;
+  }
+
+  .crypto-table {
+    padding: 0 15px;
   }
 
   .crypto-table table {
+    width: 100%;
     font-size: 14px;
+    border-radius: 6px;
+    overflow: hidden;
   }
 
   .crypto-table th,
@@ -192,15 +203,18 @@ header .container {
   }
 
   .crypto-table td img {
-    width: 16px;
+    display: none;
   }
 
-  .crypto-table td img {
-    display: none;
-  }
-  
   .crypto-table .symbol-col {
     display: none;
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px 0;
   }
 
   .footer-grid {
@@ -215,4 +229,3 @@ header .container {
   }
 }
 
-}

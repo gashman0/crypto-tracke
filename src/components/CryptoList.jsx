@@ -65,7 +65,7 @@ const CryptoList = () => {
                         </tbody>
                     </table>
                 </div>
-                <div style={{ marginTop: '1rem' }}>
+                <div className='pagination' style={{ marginTop: '1rem' }}>
                     <button className={`nav-button ${page === 1 ? 'disabled' : ''}`} onClick={() => setPage(page - 1)} disabled={page === 1}>Prev</button>
                     <button className={`nav-button ${isLastPage ? 'disabled' : ''}`} onClick={() => setPage(page + 1)} disabled={isLastPage}>Next</button>
                 </div>

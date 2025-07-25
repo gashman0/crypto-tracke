@@ -11,8 +11,8 @@ body {
   line-height: 1.6;
 }
 .container {
-  width: 50%;
-  max-width: 1200px;
+  width: 100%;
+  /* max-width: 1200px; */
   margin: auto;
   
 }

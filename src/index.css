@@ -12,10 +12,8 @@ body {
 }
 .container {
   width: 100%;
-  /* max-width: 1200px; */
+  max-width: 1200px;
   margin: auto;
-  border: 2px solid red;
-  
 }
 header {
   background-color: #161b22;
@@ -196,6 +194,7 @@ header .container {
     padding: 0 15px;
     width: 100%;
     overflow-x: auto;
+    margin: 0 auto;
   }
 
   .crypto-table table {
@@ -203,6 +202,7 @@ header .container {
     font-size: 14px;
     border-radius: 6px;
     overflow: hidden;
+    table-layout: fixed;
   }
 
   .crypto-table th,

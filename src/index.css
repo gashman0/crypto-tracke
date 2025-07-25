@@ -191,15 +191,14 @@ header .container {
   }
 
   .crypto-table {
-    padding: 0 15px;
     width: 100%;
     overflow-x: auto;
     margin: 0 auto;
   }
 
   .crypto-table table {
-    width: 100%;
-    font-size: 14px;
+    width: fit-content;
+    font-size: 12px;
     border-radius: 6px;
     overflow: hidden;
     table-layout: fixed;

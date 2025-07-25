@@ -166,6 +166,9 @@ header .container {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  .container{
+    padding: 0 15px;
+  }
   nav ul {
     flex-direction: column;
     gap: 10px;
@@ -191,6 +194,7 @@ header .container {
   .crypto-table {
     padding: 0 15px;
     width: 100%;
+    overflow-x: auto;
   }
 
   .crypto-table table {

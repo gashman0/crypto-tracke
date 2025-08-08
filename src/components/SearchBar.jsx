@@ -40,7 +40,7 @@ const SearchBar = () => {
 
       setCache(prev => ({ ...prev, [query]: data})); // update the cache with the new results
       setResults(data.coins); // update the results state with the new data
-      // console.log(data);
+      console.log(data);
     }catch(err){
       // dont show errors if the request was intentionally aborted
       if(err.name !== 'Abort Error'){

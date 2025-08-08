@@ -7,6 +7,7 @@ const SearchBar = () => {
   const [loading, setLoading] = useState(false); // for tracking loading status
   const [error, setError] = useState(null); // for storing error messages
   const [cache, setCache] = useState({}); // for caching api responses to avoid dublicate request
+  const [showNoResults, setShowNoResults] = useState(false);
 
 
   const fetchSearchResults = debounce (async (query) => {
@@ -14,12 +15,14 @@ const SearchBar = () => {
     // don't search if query is less than 3 letters
     if (query.length < 3){
       setResults([]); // clears results if query is too short
+      setShowNoResults(false);
       return;
     }
 
     // return cached results if available for this query
     if(cache[query]){
       setResults(cache[query]);
+      setShowNoResults(cache[query].coins.length === 0);
       return;
     }try{
       setLoading(true); // set loading state to true before making the api call
@@ -40,10 +43,11 @@ const SearchBar = () => {
 
       setCache(prev => ({ ...prev, [query]: data})); // update the cache with the new results
       setResults(data.coins); // update the results state with the new data
+      setShowNoResults(data.coins.length == 0);
       console.log(data);
     }catch(err){
       // dont show errors if the request was intentionally aborted
-      if(err.name !== 'Abort Error'){
+      if(err.name !== 'AbortError'){
         setError(err.message);
       }
     }finally{
@@ -69,7 +73,10 @@ const SearchBar = () => {
             <input 
               type="text" 
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => {
+                setSearch(e.target.value); 
+                setShowNoResults(false); // Reset when typing again
+              }}
               placeholder="Search a coin..." 
               aria-label="Search input" // Accessibility label
             />
@@ -96,7 +103,7 @@ const SearchBar = () => {
             )}
             
             {/* No results message */}
-            {loading && results.length === 0 && search.length > 2 && (
+            {!loading && showNoResults && (
               <div className="no-results">
                 No results found for "{search}"
               </div>

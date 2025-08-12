@@ -202,7 +202,7 @@ header .container {
   }
 
   .crypto-table {
-    width: 100%;
+    width: fit-content;
     margin: 0;
     padding: 0;
   }

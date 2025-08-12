@@ -1,5 +1,7 @@
 {
   "projects": {
     "default": "crypto-track-8148c"
-  }
+  },
+  "targets": {},
+  "etags": {}
 }

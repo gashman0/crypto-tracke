@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { debounce } from "lodash";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../firebase";
+import 'normalize.css'; 
 
 const CACHE_DURATION = 15 * 60 * 1000; // 15 minutes
 
@@ -110,7 +111,7 @@ const SearchBar = ({ onSearchResults }) => {
   }, [results, onSearchResults]);
 
   return (
-    <div className="search-bar" style={{ maxWidth: 700, margin: "auto" }}>
+    <div className="search-bar">
       <input
         type="text"
         value={search}
@@ -144,7 +145,7 @@ const SearchBar = ({ onSearchResults }) => {
       ) : (
         <>
         
-          <div className="search-crypto-tab">
+          <div className="crypto-table">
             {results.length > 0 && (
               <table className="search-table">
                 <thead>

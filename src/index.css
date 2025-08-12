@@ -59,11 +59,10 @@ header .container {
   font-size: 16px;
 }
 .search-crypto-tab{
-  border: 3px solid white;
   width: 100%;
+  text-align: left;
 }
 .search-table{
-  background-color: blue;
   border: 3px solid green;
   width: 100%;
 }

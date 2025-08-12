@@ -1,116 +1,194 @@
-import React, { useEffect, useState } from 'react';
-import { debounce } from 'lodash';
+import React, { useEffect, useState } from "react";
+import { debounce } from "lodash";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { db } from "../firebase";
+
+const CACHE_DURATION = 15 * 60 * 1000; // 15 minutes
+
+const fetchCoinData = async (page = 1) => {
+  const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=${page}&sparkline=false`;
+  try {
+    const res = await fetch(url, {
+      headers: {
+        "x-cg-demo-api-key": "CG-kPxhcSU5syzseJfrpVdgKqVv", // optional
+      },
+    });
+    if (!res.ok) throw new Error(`Failed fetching page ${page}`);
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error("fetchCoinData error:", error);
+    return [];
+  }
+};
+
+const saveCoinsToFirestore = async (coins) => {
+  const ref = doc(db, "crypto", "marketData");
+  try {
+    await setDoc(ref, {
+      data: coins,
+      timestamp: Date.now(),
+    });
+    console.log("Coins saved to Firestore");
+  } catch (error) {
+    console.error("Error saving coins to Firestore:", error);
+  }
+};
 
 const SearchBar = () => {
-  const [search, setSearch] = useState(''); // for storing the search input value
-  const [results, setResults] = useState([]); // for storing the api search result
-  const [loading, setLoading] = useState(false); // for tracking loading status
-  const [error, setError] = useState(null); // for storing error messages
-  const [cache, setCache] = useState({}); // for caching api responses to avoid dublicate request
+  const [search, setSearch] = useState("");
+  const [allCoins, setAllCoins] = useState([]);
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [showNoResults, setShowNoResults] = useState(false);
 
-
-  const fetchSearchResults = debounce (async (query) => {
-
-    // don't search if query is less than 3 letters
-    if (query.length < 3){
-      setResults([]); // clears results if query is too short
-      setShowNoResults(false);
-      return;
-    }
-
-    // return cached results if available for this query
-    if(cache[query]){
-      setResults(cache[query]);
-      setShowNoResults(cache[query].coins.length === 0);
-      return;
-    }try{
-      setLoading(true); // set loading state to true before making the api call
-      setError(null); // clear previous errors
-      const controller = new AbortController(); // create an abort controller to allow cancelling the request
-      const timeoutId = setTimeout(() => controller.abort(), 5000) // set a controller to abort the request if it takes so long (5 seconds)
-
-
-
-      // make the api request with the search query
-      const response = await fetch(`https://api.coingecko.com/api/v3/search?query=${query}`,
-      {signal: controller.signal} // passing the abort signal
-      );
-
-      clearTimeout(timeoutId); // clear the timeout since the request has been completed
-      if(!response.ok) throw new Error('Omo, Network response was not Ok'); // Throw an error if the response status is not Ok (200-299)
-      const data = await response. json();
-
-      setCache(prev => ({ ...prev, [query]: data})); // update the cache with the new results
-      setResults(data.coins); // update the results state with the new data
-      setShowNoResults(data.coins.length == 0);
-      console.log(data);
-    }catch(err){
-      // dont show errors if the request was intentionally aborted
-      if(err.name !== 'AbortError'){
-        setError(err.message);
-      }
-    }finally{
-      // set loading to false when the request is complete
-      setLoading(false);
-    }
-
-  }, 3000); // wait three seconds after typing stops before executing
-
-
-  // useEffect hook to trigger the search when search changes
+  // Load coins from Firestore or fetch fresh data
   useEffect(() => {
-    fetchSearchResults(search); // call the debounced search function
+    const loadCoins = async () => {
+      setLoading(true);
+      setError(null);
+      const ref = doc(db, "crypto", "marketData");
+      try {
+        const snapshot = await getDoc(ref);
+        const now = Date.now();
 
-    // cleanup function to cancel any pending debounced calls
-    return () => fetchSearchResults.cancel();
-  }, [search]); // Only rerun when search changes
+        if (
+          snapshot.exists() &&
+          snapshot.data().timestamp &&
+          now - snapshot.data().timestamp < CACHE_DURATION
+        ) {
+          setAllCoins(snapshot.data().data);
+          console.log("Loaded coins from cache");
+        } else {
+          // Fetch page 1 and 2 for ~500 coins
+          const page1 = await fetchCoinData(1);
+          const page2 = await fetchCoinData(2);
+          const combined = [...page1, ...page2];
+          setAllCoins(combined);
+          await saveCoinsToFirestore(combined);
+          console.log("Fetched fresh coins and saved");
+        }
+      } catch (err) {
+        console.error("Error loading coins:", err);
+        setError("Failed to load coin data");
+      } finally {
+        setLoading(false);
+      }
+    };
 
+    loadCoins();
+  }, []);
+
+  // Debounced search filtering
+  const debouncedSearch = React.useMemo(
+    () =>
+      debounce((query) => {
+        if (query.length < 3) {
+          setResults([]);
+          setShowNoResults(false);
+          return;
+        }
+        const filtered = allCoins.filter(
+          (coin) =>
+            coin.name.toLowerCase().includes(query.toLowerCase()) ||
+            coin.symbol.toLowerCase().includes(query.toLowerCase())
+        );
+        setResults(filtered);
+        setShowNoResults(filtered.length === 0);
+      }, 300),
+    [allCoins]
+  );
+
+  useEffect(() => {
+    debouncedSearch(search);
+    return () => debouncedSearch.cancel();
+  }, [search, debouncedSearch]);
 
   return (
-    <>
-        <div className="search-bar">
-            <input 
-              type="text" 
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value); 
-                setShowNoResults(false); // Reset when typing again
-              }}
-              placeholder="Search a coin..." 
-              aria-label="Search input" // Accessibility label
-            />
+    <div className="search-bar" style={{ maxWidth: 700, margin: "auto" }}>
+      <input
+        type="text"
+        value={search}
+        onChange={(e) => {
+          setSearch(e.target.value);
+          setShowNoResults(false);
+          setError(null);
+        }}
+        placeholder="Search a coin (min 3 chars)..."
+        aria-label="Search coins"
+        style={{
+          width: "100%",
+          padding: "8px 12px",
+          fontSize: "1rem",
+          marginBottom: 12,
+          borderRadius: 4,
+          border: "1px solid #ccc",
+        }}
+      />
 
-            {/* Error message display */}
-            {error && (
-              <div className="error" role="alert">
-                Error: {`Check your internet connection, ${error}`}
-              </div>
-            )}
-            
-            {/* Loading state */}
-            {loading ? (
-              <div className="loader" aria-busy="true">
-                Loading...
-              </div>
-            ) : (
-              /* Results list */
-              <ul className="results">
-                {results.map(item => (
-                  <li key={item.id}>{item.name}</li>
-                ))}
-              </ul>
-            )}
-            
-            {/* No results message */}
-            {!loading && showNoResults && (
-              <div className="no-results">
-                No results found for "{search}"
-              </div>
-            )}
+      {error && (
+        <div
+          className="error"
+          role="alert"
+          style={{ color: "red", marginBottom: 12 }}
+        >
+          Error: {error}
         </div>
-    </>
-  )
-}
+      )}
 
-export default SearchBar
+      {loading ? (
+        <div aria-busy="true" style={{ textAlign: "center", marginTop: 20 }}>
+          Loading coins...
+        </div>
+      ) : (
+        <>
+          {results.length > 0 && (
+            <table
+              className="results-table"
+              style={{ width: "100%", borderCollapse: "collapse" }}
+            >
+              <thead>
+                <tr>
+                  <th style={{ textAlign: "left", padding: "8px" }}>Name</th>
+                  <th style={{ textAlign: "left", padding: "8px" }}>Symbol</th>
+                  <th style={{ textAlign: "right", padding: "8px" }}>
+                    Price (USD)
+                  </th>
+                  <th style={{ textAlign: "right", padding: "8px" }}>
+                    Market Cap
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {results.map((coin) => (
+                  <tr key={coin.id} style={{ borderBottom: "1px solid #eee" }}>
+                    <td style={{ padding: "8px" }}>{coin.name}</td>
+                    <td style={{ padding: "8px" }}>{coin.symbol.toUpperCase()}</td>
+                    <td style={{ padding: "8px", textAlign: "right" }}>
+                      ${coin.current_price?.toLocaleString() || "N/A"}
+                    </td>
+                    <td style={{ padding: "8px", textAlign: "right" }}>
+                      ${coin.market_cap?.toLocaleString() || "N/A"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+
+          {!loading && showNoResults && (
+            <div
+              className="no-results"
+              style={{ marginTop: 20, fontStyle: "italic" }}
+            >
+              No results found for "{search}"
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+};
+
+export default SearchBar;

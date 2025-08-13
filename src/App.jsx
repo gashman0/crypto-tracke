@@ -1,30 +1,33 @@
 import React, { useState } from 'react';
+import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider } from 'react-router-dom';
 import './App.css';
-import NavBar from './components/NavBar';
-import TradingViewWidget from './components/TradingViewWidget';
-import SearchBar from './components/SearchBar';
-import CryptoList from './components/CryptoList';
-import Footer from './components/Footer';
+import MainLayout from './layouts/MainLayout';
+import HomePage from './pages/HomePage';
+import Markets from './pages/Markets';
+import News from './pages/News';
+import CoinPage from './pages/CoinPage';
+import NotFound from './pages/NotFound';
+
+
+
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route path='/' element={<MainLayout />}>
+      <Route index element={<HomePage />} />
+      <Route path='/markets' element={<Markets />} />
+      <Route path='/news' element={<News />} />
+      <Route path='/coins' element={<CoinPage />} />
+      <Route path='*' element={<NotFound />} />
+    </Route>
+  )
+);
 
 function App() {
-  const [showCryptoList, setShowCryptoList] = useState(true);
-
-  // This will be called by SearchBar when results are returned
-  const handleSearchResults = (results) => {
-    if (results && results.length > 0) {
-      setShowCryptoList(false); // hide list if search results are found
-    } else {
-      setShowCryptoList(true); // show list if no results
-    }
-  };
+  
 
   return (
     <>
-      <NavBar />
-      <TradingViewWidget />
-      <SearchBar onSearchResults={handleSearchResults} />
-      {showCryptoList && <CryptoList />}
-      <Footer />
+      <RouterProvider router={router}/>
     </>
   );
 }

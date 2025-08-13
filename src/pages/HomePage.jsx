@@ -1,19 +1,26 @@
-import React from 'react'
-import SearchBar from '../components/SearchBar'
-import CryptoList from '../components/CryptoList'
-
-
+import React, { useState } from 'react';
+import SearchBar from '../components/SearchBar';
+import CryptoList from '../components/CryptoList';
 
 
 
 const HomePage = () => {
+  const [showCryptoList, setShowCryptoList] = useState(true);
 
-  console.log("My hidden key:", process.env.REACT_APP_COINGECKO_API_KEY);
-  
+  // This will be called by SearchBar when results are returned
+  const handleSearchResults = (results) => {
+    if (results && results.length > 0) {
+      setShowCryptoList(false); // hide list if search results are found
+    } else {
+      setShowCryptoList(true); // show list if no results
+    }
+  };
+
+
   return (
     <>
-        <SearchBar />
-        <CryptoList />
+      <SearchBar onSearchResults={handleSearchResults} />
+      {showCryptoList && <CryptoList />}
     </>
   )
 }

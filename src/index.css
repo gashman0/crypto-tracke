@@ -175,6 +175,40 @@ header .container {
   font-size: 13px;
   color: #6e7681;
 }
+.pagination-container {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pagination-btn {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  color: white;
+}
+
+.pagination-btn.prev {
+  background-color: #007bff;
+}
+
+.pagination-btn.next {
+  background-color: #28a745;
+}
+
+.pagination-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+.news-date {
+  font-size: 0.7rem;
+  color: gray;
+  margin: 5px 0;
+}
 
 
 /* Responsive Design */

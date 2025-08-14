@@ -23,8 +23,8 @@ const NotFound = () => {
         },
         link: {
             padding: "10px 20px",
-            backgroundColor: "#007bff",
-            color: "#fff",
+            backgroundColor: "yellow",
+            color: "#000",
             borderRadius: "5px",
             textDecoration: "none",
         },
